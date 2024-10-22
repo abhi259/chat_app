@@ -18,13 +18,16 @@ class PhoneAuth extends ConsumerWidget {
     void handleSubmitPhoneNumber({
       required String phoneNumber,
     }) {
+
       final phoneNumber = phoneNumberController.text;
       authController.handleSubmitPhoneNumber(
         phoneNumber: phoneNumber,
         onSuccess: (String verificationId) {
+          print("OTP verification success, navigating to OTP screen");
           context.go('/auth-screen/otp-screen', extra: verificationId);
         },
         onFailure: () {
+          print("OTP verification failed, staying on auth screen");
           context.go('/auth-screen');
           //TODO: show error toast message
         },

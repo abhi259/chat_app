@@ -1,26 +1,3 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-
-// class AuthController {
-//   void handleVerifyPhoneNumber({
-//     required String phoneNumber,
-//     required Function() onSuccess,
-//     required Function() onFailure,
-//   }) async {
-//     await FirebaseAuth.instance.verifyPhoneNumber(
-//       verificationCompleted: (PhoneAuthCredential credential) {},
-//       verificationFailed: (FirebaseAuthException e) {
-//         onFailure();
-//         print("OTP verification failed: ${e.message.toString()}");
-//       },
-//       codeSent: (String verificationId, int? resendToken) {
-//         onSuccess( );
-//       },
-//       codeAutoRetrievalTimeout: (String verificationId) {},
-//       phoneNumber: phoneNumber,
-//     );
-//   }
-// }
-
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +9,9 @@ part 'auth_controller.g.dart';
 class AuthControllerState {
   final bool isLoading;
 
-  AuthControllerState({required this.isLoading});
+  AuthControllerState({
+    required this.isLoading,
+  });
 }
 
 @riverpod
@@ -97,5 +76,22 @@ class AuthController extends _$AuthController {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  Future<void> handleLogout() async {
+    try {
+      state = state.copyWith(isLoading: true);
+      await FirebaseAuth.instance.signOut();
+      print("Logout: ${FirebaseAuth.instance.currentUser}");
+    } catch (e) {
+      debugPrint("Logout failed: ${e.toString()}");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  bool isUserLoggedIn() {
+    print("isUserLoggedIn: ${FirebaseAuth.instance.currentUser}");
+    return FirebaseAuth.instance.currentUser != null;
   }
 }
